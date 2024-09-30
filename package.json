@@ -4,8 +4,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "db": "docker run -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 mysql",
     "start": "cd src && node index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "jest"
   },
   "license": "MIT",
   "dependencies": {
@@ -15,6 +17,8 @@
     "mysql2": "^3.9.7"
   },
   "devDependencies": {
-    "eslint": "^9.11.1"
+    "eslint": "^9.11.1",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
