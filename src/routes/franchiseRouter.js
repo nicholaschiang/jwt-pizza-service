@@ -83,10 +83,12 @@ franchiseRouter.post(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    if (!req.user) {
+      throw new StatusCodeError('unable to delete a franchise', 401);
+    }
     if (!req.user.isRole(Role.Admin)) {
       throw new StatusCodeError('unable to create a franchise', 403);
     }
-
     const franchise = req.body;
     res.send(await DB.createFranchise(franchise));
   })
@@ -95,6 +97,7 @@ franchiseRouter.post(
 // deleteFranchise
 franchiseRouter.delete(
   '/:franchiseId',
+  authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
     if (!req.user.isRole(Role.Admin)) {
       throw new StatusCodeError('unable to delete a franchise', 403);

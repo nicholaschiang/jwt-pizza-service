@@ -4,6 +4,6 @@ import pluginJs from "@eslint/js";
 export default [
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
   { languageOptions: { globals: globals.node } },
-  { files: ["**/*.test.js"], env: { jest: true } },
+  { files: ["**/*.test.js"], languageOptions: { globals: globals.jest } },
   pluginJs.configs.recommended,
 ];
