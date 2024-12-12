@@ -4,8 +4,29 @@ const orderRouter = require('./routes/orderRouter.js');
 const franchiseRouter = require('./routes/franchiseRouter.js');
 const version = require('./version.json');
 const config = require('./config.js');
+const metrics = require('./metrics.js');
 
 const app = express();
+
+app.use((req, res, next) => {
+  metrics.countAll++;
+  switch (req.method) {
+    case "GET":
+      metrics.countGets++;
+      break;
+    case "POST":
+      metrics.countPosts++;
+      break;
+    case "PUT":
+      metrics.countPuts++;
+      break;
+    case "DELETE":
+      metrics.countDeletes++;
+      break;
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(setAuthUser);
 app.use((req, res, next) => {
