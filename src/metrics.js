@@ -26,6 +26,8 @@ metrics.pizzasFailedCount = 0;
 metrics.revenueTotal = 0;
 
 // Order latency will be tracked via Performance.now() differences.
+metrics.serviceLatency = 0;
+metrics.pizzaCreationLatency = 0;
 
 // CPU and memory usage percentage.
 function getCpuUsagePercentage() {

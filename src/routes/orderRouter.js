@@ -114,6 +114,8 @@ orderRouter.post(
   "/",
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    const performance = new Performance();
+    const start = performance.now();
     const orderReq = req.body;
     const order = await DB.addDinerOrder(req.user, orderReq);
     const r = await fetch(`${config.factory.url}/api/order`, {
@@ -138,13 +140,13 @@ orderRouter.post(
       });
     } else {
       metrics.pizzasFailedCount += order.items.length;
-      res
-        .status(500)
-        .send({
-          message: "Failed to fulfill order at factory",
-          reportErrorToPizzaFactoryUrl: j.reportUrl,
-        });
+      res.status(500).send({
+        message: "Failed to fulfill order at factory",
+        reportErrorToPizzaFactoryUrl: j.reportUrl,
+      });
     }
+    const end = performance.now();
+    metrics.pizzaCreationLatency = end - start;
   })
 );
 

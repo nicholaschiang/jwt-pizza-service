@@ -5,6 +5,7 @@ const franchiseRouter = require('./routes/franchiseRouter.js');
 const version = require('./version.json');
 const config = require('./config.js');
 const metrics = require('./metrics.js');
+const responseTime = require('response-time');
 
 const app = express();
 
@@ -26,6 +27,9 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.use(responseTime((req, res, time) => {
+  metrics.serviceLatency = time;
+}));
 
 app.use(express.json());
 app.use(setAuthUser);
