@@ -4,6 +4,8 @@ const config = require("../config.js");
 const { StatusCodeError } = require("../endpointHelper.js");
 const { Role } = require("../model/model.js");
 const dbModel = require("./dbModel.js");
+const logger = require("../logger.js");
+
 class DB {
   constructor() {
     this.initialized = this.initializeDatabase();
@@ -38,7 +40,11 @@ class DB {
     try {
       const hashedPassword = await bcrypt.hash(user.password, 10);
 
-      const userResult = await this.query(connection, `INSERT INTO user (name, email, password) VALUES (?, ?, ?)`, [user.name, user.email, hashedPassword]);
+      const userResult = await this.query(
+        connection,
+        `INSERT INTO user (name, email, password) VALUES (?, ?, ?)`,
+        [user.name, user.email, hashedPassword]
+      );
       const userId = userResult.insertId;
       for (const role of user.roles) {
         switch (role.role) {
@@ -381,6 +387,7 @@ class DB {
   }
 
   async query(connection, sql, params) {
+    logger.log("info", "db", { sql, params });
     const [results] = await connection.execute(sql, params);
     return results;
   }
@@ -421,7 +428,9 @@ class DB {
       const connection = await this._getConnection(false);
       try {
         const dbExists = await this.checkDatabaseExists(connection);
-        console.log(dbExists ? 'Database exists' : 'Database does not exist, creating it');
+        console.log(
+          dbExists ? "Database exists" : "Database does not exist, creating it"
+        );
 
         await connection.query(
           `CREATE DATABASE IF NOT EXISTS ${config.db.connection.database}`
@@ -429,7 +438,7 @@ class DB {
         await connection.query(`USE ${config.db.connection.database}`);
 
         if (!dbExists) {
-          console.log('Successfully created database');
+          console.log("Successfully created database");
         }
 
         for (const statement of dbModel.tableCreateStatements) {
