@@ -7,7 +7,7 @@
     "db": "docker run -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 mysql",
     "start": "cd src && node index.js",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest --forceExit"
   },
   "license": "MIT",
   "dependencies": {
